@@ -1,6 +1,4 @@
--- =========================================
 -- 1. CREATE LOANS TABLE
--- =========================================
 
 CREATE TABLE loans (
     loan_id VARCHAR(20) PRIMARY KEY,
@@ -23,17 +21,13 @@ CREATE TABLE loans (
 );
 
 
--- =========================================
 -- 2. IMPORT LOANS CSV
--- =========================================
 -- Import MSR_Loans_1000.csv using pgAdmin Import/Export
 -- Header = Yes
 -- Format = CSV
 
 
--- =========================================
 -- 3. DATA QUALITY CHECK
--- =========================================
 
 SELECT
     loan_id,
@@ -50,9 +44,7 @@ WHERE current_balance < 0
    OR remaining_term_months <= 0;
 
 
--- =========================================
 -- 4. CREATE CLEAN LOANS VIEW
--- =========================================
 
 CREATE VIEW clean_loans AS
 SELECT *
@@ -64,9 +56,7 @@ WHERE current_balance >= 0
   AND remaining_term_months > 0;
 
 
--- =========================================
 -- 5. VERIFY CLEAN PORTFOLIO
--- =========================================
 
 SELECT
     COUNT(*) AS total_clean_loans,
@@ -82,9 +72,7 @@ SELECT
 FROM clean_loans;
 
 
--- =========================================
 -- 6. CREATE ASSUMPTIONS TABLE
--- =========================================
 
 CREATE TABLE msr_assumptions (
     assumption_name VARCHAR(50) PRIMARY KEY,
@@ -92,9 +80,7 @@ CREATE TABLE msr_assumptions (
 );
 
 
--- =========================================
 -- 7. INSERT BASE ASSUMPTIONS
--- =========================================
 
 INSERT INTO msr_assumptions (
     assumption_name,
@@ -128,18 +114,14 @@ VALUES
     ('stress_default_rate', 0.04),
     ('stress_discount_rate', 0.10);
 
--- =========================================
 -- 8. CHECK ASSUMPTIONS
--- =========================================
 
 SELECT *
 FROM msr_assumptions;
 
 
--- =========================================
 -- 9. CALCULATE MONTHLY SMM
 --    AND MONTHLY DISCOUNT RATE
--- =========================================
 
 SELECT
     1 - POWER(
