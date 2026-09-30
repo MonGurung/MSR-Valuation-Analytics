@@ -113,9 +113,7 @@ loan_inputs AS (
 
 msr_projection AS (
 
-    -- =====================================
     -- MONTH 1
-    -- =====================================
 
     SELECT
         1 AS month_number,
@@ -152,9 +150,7 @@ msr_projection AS (
     UNION ALL
 
 
-    -- =====================================
     -- MONTH 2 ONWARD
-    -- =====================================
 
     SELECT
         month_number + 1,
@@ -196,17 +192,13 @@ valuation_calc AS (
     SELECT
         *,
 
-        -- =====================================
         -- MONTHLY INTEREST
-        -- =====================================
 
         beginning_upb
             * (interest_rate / 100.0 / 12)
             AS monthly_interest,
 
-        -- =====================================
         -- SCHEDULED PRINCIPAL
-        -- =====================================
 
         LEAST(
             monthly_payment
@@ -215,9 +207,7 @@ valuation_calc AS (
             beginning_upb
         ) AS scheduled_principal,
 
-        -- =====================================
         -- BALANCE BEFORE PREPAYMENT
-        -- =====================================
 
         GREATEST(
             0,
@@ -230,9 +220,7 @@ valuation_calc AS (
             )
         ) AS balance_before_prepayment,
 
-        -- =====================================
         -- PREPAYMENT
-        -- =====================================
 
         GREATEST(
             0,
@@ -246,9 +234,7 @@ valuation_calc AS (
         )
         * monthly_smm AS prepayment,
 
-        -- =====================================
         -- EXPECTED DEFAULT
-        -- =====================================
 
         (
             GREATEST(
@@ -265,18 +251,14 @@ valuation_calc AS (
         )
         * monthly_default_rate AS default_amount,
 
-		-- =====================================
         -- SERVICING REVENUE
-        -- =====================================
 
         beginning_upb
             * servicing_fee_rate
             / 12
             AS servicing_revenue,
 
-        -- =====================================
         -- SERVICING COST
-        -- =====================================
 
         (
             SELECT assumption_value
@@ -284,9 +266,7 @@ valuation_calc AS (
             WHERE assumption_name = 'base_annual_servicing_cost'
         ) / 12 AS servicing_cost,
 
-        -- =====================================
         -- ANCILLARY REVENUE
-        -- =====================================
 
         (
             SELECT assumption_value
@@ -294,9 +274,7 @@ valuation_calc AS (
             WHERE assumption_name = 'base_ancillary_revenue_monthly'
         ) AS ancillary_revenue,
 
-        -- =====================================
         -- NET MSR CASH FLOW
-        -- =====================================
 
         (
             beginning_upb * servicing_fee_rate / 12
@@ -317,9 +295,7 @@ valuation_calc AS (
         )
         AS net_msr_cash_flow,
 
-        -- =====================================
         -- PRESENT VALUE
-        -- =====================================
 
         (
             (
